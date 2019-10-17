@@ -1,0 +1,104 @@
+# This file "readdata" contains the function readdata().
+# Date: 2019-10-16
+# Julia version: 1.01
+# Author: Jaap de Gruijter
+
+function readdata()
+
+global x, y, z_pred, s2, N
+##################################### Reading the data file
+Data = CSV.read(filename; delim=",", header=false, silencewarnings=true)
+Data = dropmissing(Data)
+x = Data[!, 1]
+y = Data[!, 2]
+# nr = Data[!, 3]        grid point identifier
+z_pred = Data[!, 4]
+s2 = Data[!, 5]
+N = length(x)
+println("Grid size : ", N)
+
+##################################### Checking process parameters
+if H < 1                                    # check H
+  println("ERROR: H is smaller than 1")
+  quit()
+end
+type_H = typeof(H)
+if type_H != Int64
+  print("ERROR: H is not an integer")
+  quit()
+end
+
+if runmax < 1                                # check runmax
+  println("ERROR: runmax is smaller than 1")
+  quit()
+end
+type_runmax = typeof(runmax)
+if type_runmax != Int64
+  print("ERROR: runmax is not an integer")
+  quit()
+end
+
+if maxcycle < 0                              # check maxcycle
+  println("ERROR: maxcycle is negative")
+  quit()
+end
+type_maxcycle = typeof(maxcycle)
+if type_maxcycle != Int64
+  print("ERROR: maxcycle is not an integer")
+  quit()
+end
+
+if in < 1                                    # check in
+  println("ERROR: in is smaller than 1")
+  quit()
+end
+type_in = typeof(in)
+if type_in != Int64
+  print("ERROR: in is not an integer")
+  quit()
+end
+
+if nmax < H                                  # check nmax
+  println("ERROR: nmax is smaller than H")
+  quit()
+end
+type_nmax = typeof(nmax)
+if type_nmax != Int64
+  print("ERROR: nmax is not an integer")
+  quit()
+end
+
+if R2 < 0                                    # check R2
+  println("ERROR: R2 is negative")
+  quit()
+end
+if R2 > 1
+  println("ERROR: R2 is larger than 1")
+  quit()
+end
+
+if range <= 0                                 # check range
+  println("ERROR: range is zero or negative")
+  quit()
+end
+
+if RSEmax <= 0                                # check RSEmax
+  println("ERROR: RSEmax is zero or negative")
+  quit()
+end
+if RSEmax > 100
+  println("ERROR: RSEmax is larger than 100")
+  quit()
+end
+
+println("Seed for random number generator : ",seed)
+println("Number of strata :  ", H)
+println("Sampling interval :  ", in)
+println("R2 :  ", R2)
+println("Range :  ", range)
+println("Maximum number of iteration cycles :  ", maxcycle)
+println("Number of runs :  ", runmax)
+println("Sample size for which the RSE is calculated :  ", nmax)
+println("RSE for which the sample size is calculated :  ", RSEmax)
+
+end         # function readdata

@@ -1,0 +1,51 @@
+# This file "main" must be run to call function
+# ospatsmr() or allocatemr(), after filling in the name
+# of the data file and the process parameters below.
+# Data file: no header, comma-separated values, x, y, prediction
+# and prediction error variance in column 1, 2, 4 and 5.
+#   The main differences with the previous version (2017) are that the code 
+# has been upgraded to Julia version 1.01, and that the functionality of
+# drawing a sample has been dropped.
+
+# Date: 2019-10-16
+# Julia version 1.01
+# Author: Jaap de Gruijter
+
+using DataFrames
+using Random
+using DelimitedFiles
+using CSV
+
+include("ospatsmr")
+include("allocatemr")
+include("readdata")
+
+filename = "Nowley.txt"     #### INSERT here name of data file
+println("File name :  ",filename)
+
+################################ INSERT here process parameters:
+R2 = 0.36       # squared correlation coefficient of predictions.
+range = 582     # auto-correlation range of the prediction error,
+                # in the same length unit as x and y.
+maxcycle = 100  # Maximal number of re-allocation cycles.
+H = 5           # Number of strata.
+runmax = 2      # Number of runs.
+in = 2          # Sampling interval for coarse-gridding
+                # (in = 1 implies no coarse-gridding).
+nmax = 50       # Sample size for which the Relative Standard Error,
+                # as percentage of the grid average of the
+                # predictions is calculated.
+RSEmax = 1.5    # Relative Standard Error for which the sample size
+                # is calculated.
+seed = 1234     # seed for the rand() and randperm() functions.
+rng = Random.seed!(seed)
+
+readdata()
+
+if in == 1
+  println("Calling function ospatsmr")
+  ospatsmr()
+elseif in > 1
+  println("Calling function allocatemr")
+  allocatemr()
+end     # if in == 1
